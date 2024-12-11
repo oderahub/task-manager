@@ -4,6 +4,7 @@ const connectToDb = require("./database/db")
 const notFound = require("./src/middleware/not-found")
 const errorHandler = require("./src/middleware/errorHandler")
 const dotenv = require("dotenv")
+const Userrouter = require("./src/routes/User")
 
 dotenv.config()
 
@@ -13,7 +14,9 @@ const app = express()
 app.use(express.static("./public"))
 app.use(express.json())
 
+app.use("/api/v1/users", Userrouter)
 app.use("/api/v1/tasks", Taskrouter)
+
 
 
 app.use(notFound)

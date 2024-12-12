@@ -16,7 +16,7 @@ const TaskSchema = new mongoose.Schema({
         trim: true,
         maxlength: [80, "character must not be more than 80"]
     },
-    deuDate: {
+    dueDate: {
         type: Date
     },
     status: {
@@ -31,7 +31,7 @@ const TaskSchema = new mongoose.Schema({
     },
     createdBy: {
         type: String,
-        ref: "User",
+        ref: User,
         required: true
     },
     assignedTo: {

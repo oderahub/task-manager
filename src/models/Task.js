@@ -1,5 +1,4 @@
 const mongoose = require("mongoose")
-const { v4: uuidv4 } = require("uuid")
 const User = require("./User")
 
 
@@ -27,10 +26,11 @@ const TaskSchema = new mongoose.Schema({
 
     priority: {
         type: String,
-        enum: ["low", "medium", "high"]
+        enum: ["low", "medium", "high"],
+        default: "low"
     },
     createdBy: {
-        type: String,
+        type: mongoose.Types.ObjectId,
         ref: User,
         required: true
     },
@@ -57,4 +57,9 @@ const TaskSchema = new mongoose.Schema({
     }
 )
 
+TaskSchema.index({ dueDate })
+TaskSchema.index({ priority })
+TaskSchema.index({ status })
+TaskSchema.index({ createdBy })
+TaskSchema.index({ tags: "text" })
 module.exports = mongoose.model("Task", TaskSchema)

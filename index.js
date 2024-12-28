@@ -4,12 +4,17 @@ const connectToDb = require("./database/db")
 const notFound = require("./src/middleware/not-found")
 const errorHandler = require("./src/middleware/errorHandler")
 const dotenv = require("dotenv")
-const Userrouter = require("./src/routes/User")
+const Userrouter = require("./src/routes/User");
+const authenticate = require("./src/middleware/auth");
 
 dotenv.config()
 
 const app = express()
 
+
+// Apply the authentication middleware to all routes that need authentication
+
+app.use(authenticate)
 //middleware
 app.use(express.static("./public"))
 app.use(express.json())

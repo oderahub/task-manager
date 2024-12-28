@@ -4,14 +4,14 @@ const { v4: uuidv4 } = require("uuid")
 const bcrypt = require("bcrypt")
 
 
-const UserShema = new mongoose.Schema({
+const UserSchema = new mongoose.Schema({
     _id: {
         type: String,
         default: uuidv4
     },
     email: {
         type: String,
-        require: true,
+        required: true,
         unique: true,
     },
     username: {
@@ -43,4 +43,4 @@ UserShema.methods.comparePassword = async function (candidatePassword) {
 
 }
 
-module.exports = mongoose.model("User", UserShema)
+module.exports = mongoose.model("User", UserSchema)

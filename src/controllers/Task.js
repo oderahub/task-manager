@@ -7,12 +7,14 @@ const verifyTaskOwner = require("../utiles/verifyOwner")
 const getAllTask = asyncWrapper(async (req, res) => {
     const validatedQuery = taskSchema.partial().safeParse(req.query);
     if (!validatedQuery.success) {
-        const errors = validatedData.error.errors.map(e => e.message).join(', ');
+        const errors = validatedQuery.error.errors.map(e => e.message).join(', ');
         throw createCustomError(errors, 400);
     }
 
     const { page = 1, limit = 20, ...filterOptions } = validatedQuery.data;
-    const queryObject = { ...filterOptions };
+    const queryObject = { ...filterOptions, createdBy: req.user.userId };
+
+
 
 
     let sortObject = { createdAt: -1 };
@@ -20,6 +22,7 @@ const getAllTask = asyncWrapper(async (req, res) => {
         const order = req.query.order === 'desc' ? -1 : 1;
         sortObject = { [req.query.sort]: order };
     }
+
 
     // Use sortObject in your query
     const tasks = await Task.find(queryObject)
@@ -37,6 +40,24 @@ const getAllTask = asyncWrapper(async (req, res) => {
         tasks
     });
 });
+
+const getOneTask = asyncWrapper(async (req, res) => {
+
+    const { id: taskID } = req.params
+    const userId = req.user.userId
+
+    if (!taskID) {
+        throw createCustomError("Task ID is required", 400);
+    }
+
+    const task = await verifyTaskOwner(taskID, userId)
+
+
+    res.status(200).json({ task })
+
+}
+
+)
 
 const createTask = asyncWrapper(async (req, res) => {
     const validatedData = taskSchema.omit({ createdBy: true }).safeParse(req.body);
@@ -62,6 +83,10 @@ const updateTask = asyncWrapper(async (req, res) => {
         throw createCustomError(errors, 400);
     }
 
+    if (!taskID) {
+        throw createCustomError("Task ID is required", 400);
+    }
+
     const userID = req.user.userId;
     await verifyTaskOwner(taskID, userID);
 
@@ -76,6 +101,10 @@ const updateTask = asyncWrapper(async (req, res) => {
 const deleteTask = asyncWrapper(async (req, res) => {
     const { id: taskID } = req.params;
     const userID = req.user.userId;
+
+    if (!taskID) {
+        throw createCustomError("Task ID is required", 400);
+    }
 
     await verifyTaskOwner(taskID, userID);
 

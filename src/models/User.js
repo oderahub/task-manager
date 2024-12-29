@@ -21,7 +21,10 @@ const UserSchema = new mongoose.Schema({
     },
     password: {
         type: String
-    }
+    },
+    refreshTokens: [{
+        type: String
+    }]
 })
 
 UserShema.pre("save", async function (next) {
@@ -41,6 +44,19 @@ UserShema.pre("save", async function (next) {
 UserShema.methods.comparePassword = async function (candidatePassword) {
     return await bcrypt.compare(candidatePassword, this.password)
 
+}
+
+UserSchema.methods.addRefreshToken = async function (token) {
+    this.refreshTokens.push(token);
+    await this.save()
+}
+
+UserSchema.methods.removeRefreshToken = async function (token) {
+    const index = this.refreshTokens.indexOf(token)
+    if (index !== -1) {
+        this.refreshTokens.splice(index, 1)
+        await this.save()
+    }
 }
 
 module.exports = mongoose.model("User", UserSchema)

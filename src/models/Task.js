@@ -30,7 +30,7 @@ const TaskSchema = new mongoose.Schema({
         default: "low"
     },
     createdBy: {
-        type: mongoose.Types.ObjectId,
+        type: String,
         ref: User,
         required: true
     },
@@ -57,9 +57,9 @@ const TaskSchema = new mongoose.Schema({
     }
 )
 
-TaskSchema.index({ dueDate })
-TaskSchema.index({ priority })
-TaskSchema.index({ status })
-TaskSchema.index({ createdBy })
+TaskSchema.index({ dueDate: 1 })
+TaskSchema.index({ priority: 1 })
+TaskSchema.index({ status: 1 })
+TaskSchema.index({ createdBy: 1 })
 TaskSchema.index({ tags: "text" })
 module.exports = mongoose.model("Task", TaskSchema)

@@ -1,9 +1,7 @@
-
+const { CustomAPIError, createCustomError } = require("../errors/custom-error")
 const User = require("../models/User")
-const { createCustomError } = require("../errors/custom-error")
 const asyncWrapper = require("../middleware/asyncWrapper")
 const jwt = require("jsonwebtoken")
-
 
 
 const registerUser = asyncWrapper(async (req, res) => {
@@ -69,27 +67,26 @@ const refreshToken = asyncWrapper(async (req, res) => {
     const refreshToken = req.body.refreshToken
 
     if (!refreshToken) {
-        throw createCustomError("Token is required", 400)
+        throw createCustomError("Token is required", 400);
     }
 
     let decoded;
 
     try {
-        decoded = jwt.verify(refreshToken, process.env.JWT_REFRESH_SECRET)
+        decoded = jwt.verify(refreshToken, process.env.JWT_REFRESH_SECRET);
     } catch (error) {
-        throw createCustomError("invalid token", 401)
+        throw createCustomError("Invalid token", 401);
     }
 
-    const user = await User.findOne({ _id: decoded.user.userId, refreshTokens: { $in: [refreshToken] } })
+    const user = await User.findOne({ _id: decoded.userId, refreshTokens: { $in: [refreshToken] } });
 
     if (!user) {
-        throw createCustomError("Token not found in users token", 401)
-
+        throw createCustomError("Token not found in user's tokens", 401);
     }
 
-    const newAccessToken = jwt.sign({ userId: user._id, email: user.email }, process.env.JWT_SECRET, { expiresIn: "15m" })
-    res.status(200).json({ accessToken: newAccessToken })
-})
+    const newAccessToken = jwt.sign({ userId: user._id, email: user.email }, process.env.JWT_SECRET, { expiresIn: "15m" });
+    res.status(200).json({ accessToken: newAccessToken });
+});
 
 
 module.exports = { registerUser, loginUser, refreshToken }

@@ -2,7 +2,7 @@ const { taskSchema, taskUpdateSchema, shareTaskSchema } = require('../utiles/tas
 const Task = require("../models/Task")
 const asyncWrapper = require("../middleware/asyncWrapper")
 const { createCustomError } = require("../errors/custom-error")
-const verifyTaskOwner = require("../utiles/verifyOwner")
+const { verifyTaskOwner } = require("../utiles/verifyOwner")
 
 const getAllTask = asyncWrapper(async (req, res) => {
     const validatedQuery = taskSchema.partial().safeParse(req.query);

@@ -12,14 +12,18 @@ dotenv.config()
 const app = express()
 
 
-// Apply the authentication middleware to all routes that need authentication
 
-app.use(authenticate)
+
 //middleware
 app.use(express.static("./public"))
 app.use(express.json())
 
 app.use("/api/v1/users", Userrouter)
+
+
+// Apply the authentication middleware to only task routes that need authentication
+app.use(authenticate)
+
 app.use("/api/v1/tasks", Taskrouter)
 
 

@@ -1,5 +1,6 @@
 
 const Task = require("../models/Task")
+const Types = require("mongoose")
 
 const createCustomError = require("../errors/custom-error")
 
@@ -7,7 +8,7 @@ const createCustomError = require("../errors/custom-error")
 const verifyTaskOwner = async (taskID, userID) => {
 
 
-    if (!taskID || !Types.ObjectId.isValid(taskID)) {
+    if (!taskID || !/^[0-9a-fA-F]{24}$/.test(taskID)) {
         throw createCustomError("Invalid task ID", 400)
     }
 
@@ -15,7 +16,7 @@ const verifyTaskOwner = async (taskID, userID) => {
 
 
 
-    if (task.createdBy.toString() !== userID) {
+    if (task.createdBy !== userID) {
         throw createCustomError("Unauthorized", 403)
     }
 

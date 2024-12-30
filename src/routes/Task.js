@@ -8,7 +8,7 @@ router.use(authenticate)
 
 router.route("/").get(getAllTask).post(createTask)
 
-router.route("/:id").get(getOneTask).put(updateTask).delete(deleteTask)
+router.route("/:id").get(getOneTask).patch(updateTask).delete(deleteTask)
 
 
 
